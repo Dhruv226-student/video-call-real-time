@@ -10,12 +10,12 @@ exports.create = async (userBody) => {
 
 /**
  * update A user
- * @param {Object} userBody - The user data to update
- * @param {String} userId - The id of the user to update
+ * @param {Object} userId - The user data to update
+ * @param {String} userBody - The id of the user to update
  * @return {Object} - The updated user
  */
-exports.update = async (userBody, userId) => {
-    return User.findByIdAndUpdate(userId, userBody, { new: true });
+exports.update = async (userId, userBody) => {
+    return User.findOneAndUpdate(userId, userBody, { new: true });
 }
 
 
