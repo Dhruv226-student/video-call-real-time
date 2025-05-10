@@ -2,9 +2,14 @@ const express= require('express');
 const dotenv= require('dotenv');
 
 const routes = require('./routes/index');
+const connectDB = require('./db/db');
 dotenv.config();
 const PORT = process.env.PORT || 5001;
 const app = express();
+
+
+app.use(express.json());
+app.use(express.urlencoded({extended:true}));
 
 app.use("/api", routes)
 
@@ -22,4 +27,5 @@ app.use("/api", routes)
 
 app.listen(PORT,()=>{
     console.log("Server is running on port 5001");
+    connectDB();
 })
