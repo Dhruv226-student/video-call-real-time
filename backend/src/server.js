@@ -4,10 +4,16 @@ const dotenv= require('dotenv');
 const routes = require('./routes/index');
 const connectDB = require('./db/db');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 dotenv.config();
 const PORT = process.env.PORT || 5001;
-const app = express();
 
+const app = express();
+app.use(cors({
+    origin: '*',
+    credentials: true, // allow frontend to access cookies
+    methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
 
 app.use(express.json());
 app.use(cookieParser());
