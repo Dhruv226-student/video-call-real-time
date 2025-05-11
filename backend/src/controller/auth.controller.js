@@ -123,11 +123,13 @@ module.exports = {
 
  onboarding: async (req, res) => {
   try {
-    const { nativeLanguage, learningLanguage, location } = req.body;
+    const { nativeLanguage, learningLanguage, location ,fullName , profilePic} = req.body;
 
     const user = await userService.update(
       { _id: req.user._id },
       {
+        fullName,
+        profilePic,
         nativeLanguage,
         learningLanguage,
         location,

@@ -1,15 +1,26 @@
 import React, { useState } from 'react'
 import { ShipWheelIcon } from 'lucide-react'
 import { Link } from 'react-router'
+
+import useSignUp from '../hooks/useSignUp'
 const SignUpPage = () => {
   const [signupData, setSignupData] = useState({
     fullName: '',
     email: '',
     password: '',
   })
+  // const queryClient = useQueryClient()
+
+  // const { mutate: signupMutation, isPending, error } = useMutation({
+  //   mutationFn: signup,
+  //   onSuccess: () => queryClient.invalidateQueries({ queryKey: ['authUser'] }),
+  // })
+
+  const {signupMutation , isPending , error} = useSignUp()
 
   const handleSignup = (e) => {
     e.preventDefault()
+    signupMutation(signupData)
     // Handle signup logic here
     console.log('Signup data:', signupData)
   }
@@ -21,12 +32,19 @@ const SignUpPage = () => {
           {/* logo */}
           <div className='mb-4 flex items-center justify-start gap-2'>
             <ShipWheelIcon className="size-9 text-primary" />
-            <h1 className='text-2xl font-bold text-primary'>Real Time </h1>
 
             <span className='text-3xl fonnt-bold font-mono bg-clip-text text-transparent bg-gradient-to-r from-primary to-secondary tracking-wider'>
-
+              Real Time Chat app
             </span>
           </div>
+
+            {/* ERROR MESSAGE IF ANY */}
+          {error && (
+            <div className="alert alert-error mb-4">
+              <span>{error.response.data.message}</span>
+            </div>
+          )}
+
 
           {/* signup form */}
           <div className='w-full'>
@@ -96,9 +114,15 @@ const SignUpPage = () => {
 
                   </div>
                 </div>
-
-                <button className='btn btn-primary w-full' type='submit'>
-                  Create Account
+<button className="btn btn-primary w-full" type="submit">
+                  {isPending ? (
+                    <>
+                      <span className="loading loading-spinner loading-xs"></span>
+                      Loading...
+                    </>
+                  ) : (
+                    "Create Account"
+                  )}
                 </button>
 
                 <div className='text-center mt-4'>

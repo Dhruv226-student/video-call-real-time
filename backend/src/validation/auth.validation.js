@@ -25,7 +25,7 @@ module.exports = {
     body: Joi.object().keys({
       fullName: Joi.string().min(3).max(30).required(),
       bio: Joi.string().max(100).required(),
-      
+profilePic: Joi.string().uri().required(),
       nativeLanguage: Joi.string().required(),
       learningLanguage: Joi.string().required(),
       location: Joi.string().required(),

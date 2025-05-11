@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5001;
 
 const app = express();
 app.use(cors({
-    origin: '*',
+    origin: 'http://localhost:5173',
     credentials: true, // allow frontend to access cookies
     methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
