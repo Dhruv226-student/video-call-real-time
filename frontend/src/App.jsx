@@ -10,6 +10,7 @@ import SignupPage from './pages/SignupPage'
 import { Toaster } from 'react-hot-toast'
 import PageLoder from './components/PageLoder.jsx'
 import useAuthUser from './hooks/useAuthUser.js'
+import Layout from './components/Layout.jsx'
 // import './App.css'
 const App = () => {
 
@@ -23,7 +24,12 @@ const App = () => {
   return (
     <div data-theme="coffee">
       <Routes>
-        <Route path="/" element={isAuthenticated && isOnBoarded ? (<HomePage />) : (<Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />)} />
+        <Route path="/" element={isAuthenticated && isOnBoarded ? (
+          <Layout showSidebar={true}>
+
+            <HomePage />
+          </Layout>
+          ) : (<Navigate to={!isAuthenticated ? "/login" : "/onboarding"} />)} />
         <Route path="/signup" element={!authUser ? <SignupPage /> : <Navigate to={
           isOnBoarded ? "/" : "/onboarding"
         } />} />
@@ -35,7 +41,12 @@ const App = () => {
         ) : (
           <Navigate to={"/login"} />
         )} />
-        <Route path="/chat" element={isAuthenticated ? <ChatPage /> : <Navigate to="/login" />} />
+        <Route path="/chat" element={isAuthenticated ?
+          
+          <Layout showSidebar={false}>
+          <ChatPage /> 
+          </Layout>
+          : <Navigate to="/login" />} />
         <Route path="/call" element={isAuthenticated ? <CallPage /> : <Navigate to="/login" />} />
         <Route path="/notification" element={isAuthenticated ? <NotificationPage /> : <Navigate to="/login" />} />
       </Routes>

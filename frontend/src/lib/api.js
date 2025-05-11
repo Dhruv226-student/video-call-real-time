@@ -8,10 +8,21 @@ export const login = async (loginData) => {
   const response = await axiosInstance.post("/auth/login", loginData);
   return response.data;
 };
+export const logout = async () => {
+  const response = await axiosInstance.post("/auth/logout");
+  return response.data;
+};
 
 export const getAuthUser = async () => {
-  const response = await axiosInstance.get("/auth/me");
+  try {
+    const response = await axiosInstance.get("/auth/me");
   return response.data;
+  } catch (error) {
+    console.error("Error fetching auth user:", error);
+  return null
+    
+  }
+  
 };
 
 export const completeOnboarding = async (onboardingData) => {
