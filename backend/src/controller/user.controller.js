@@ -47,7 +47,8 @@ module.exports = {
   sendFriendRequest: async (req, res) => {
     try {
       const myId = req.user._id;
-      const { id: recipentId } = req.params;
+      
+      const { userId: recipentId } = req.params;
 
       if (myId === recipentId) {
         return res.status(400).json({
@@ -72,8 +73,8 @@ module.exports = {
 
       const existingRequest = await FriendRequest.findOne({
         $or: [
-          { sender: myId, recipent: recipentId },
-          { sender: recipentId, recipent: myId },
+          { sender: myId, receiver: recipentId },
+          { sender: recipentId, receiver: myId },
         ],
       });
       if (existingRequest) {
@@ -84,14 +85,11 @@ module.exports = {
       }
       const friendRequest = await FriendRequest.create({
         sender: myId,
-        recipent: recipentId,
+        receiver: recipentId,
       });
 
-      res.status(200).json({
-        status: "success",
-        message: "Friend request sent successfully",
-        data: friendRequest,
-      });
+      res.status(200).json( friendRequest,
+      );
     } catch (error) {
       console.error("Error in sendFriendRequest:", error);
       res.status(500).json({
@@ -112,7 +110,7 @@ module.exports = {
           message: "Friend request not found",
         });
       }
-      if (friendRequest.recipent.toString() !== myId.toString()) {
+      if (friendRequest.receiver.toString() !== myId.toString()) {
         return res.status(403).json({
           status: "error",
           message: "You are not authorized to accept this request",
@@ -122,9 +120,9 @@ module.exports = {
       await friendRequest.save();
       //  add each other to friends list
       await User.findByIdAndUpdate(friendRequest.sender, {
-        $addToSet: { friends: friendRequest.recipent },
+        $addToSet: { friends: friendRequest.receiver },
       });
-      await User.findByIdAndUpdate(friendRequest.recipent, {
+      await User.findByIdAndUpdate(friendRequest.receiver, {
         $addToSet: { friends: friendRequest.sender },
       });
 
@@ -143,7 +141,7 @@ module.exports = {
   getFriendRequests: async (req, res) => {
     try {
       const incomingRequests = await FriendRequest.find({
-        recipent: req.user._id,
+        receiver: req.user._id,
         status: "pending",
       }).populate(
         "sender",
@@ -151,7 +149,7 @@ module.exports = {
       );
 
       const acceptedRequests = await FriendRequest.find({
-        recipent: req.user._id,
+        receiver: req.user._id,
         status: "accepted",
       }).populate(
         "sender",
@@ -169,11 +167,7 @@ module.exports = {
         // outgoingRequests,
       };
 
-      res.status(200).json({
-        status: "success",
-        message: "Friend requests fetched successfully",
-        data: allRequests,
-      });
+      res.status(200).json( allRequests);
     } catch (error) {
       console.error("Error in getFriendRequests:", error);
       res.status(500).json({
@@ -189,14 +183,10 @@ module.exports = {
         sender: req.user._id,
         status: "pending",
       }).populate(
-        "recipent",
+        "receiver",
         "fullName profilePic nativeLanguage learningLanguage location"
       );
-      res.status(200).json({
-        status: "success",
-        message: "Outgoing friend requests fetched successfully",
-        data: outgoingRequests,
-      });
+      res.status(200).json( outgoingRequests);
     } catch (error) {
       res.status(500).json({
         status: "error",
